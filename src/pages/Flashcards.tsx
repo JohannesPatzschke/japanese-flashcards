@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Flashcard from '../components/Flashcard';
-import FilterBox from '../components/FilterBox';
+import FilterDrawer from '../components/FilterDrawer';
 import { shuffleArray } from '../utils/shuffle';
 import hiragana from '../assets/hiragana.json';
+import { Button, IconButton, Progress, useDisclosure } from '@chakra-ui/react';
+import { RepeatIcon, SettingsIcon } from '@chakra-ui/icons';
+import { SettingsContext } from '../contexts/Settings';
 
 const Flashcards = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentCard, setCurrentCard] = useState(0);
+  const { filter } = useContext(SettingsContext);
   const [cards, setCards] = useState(shuffleArray(hiragana));
 
   const card = cards[currentCard];
 
-  const handleFilter = (types: Array<string>) => {
+  useEffect(() => {
     setCurrentCard(0);
 
     const filteredCards =
-      types.length === 0 ? hiragana : hiragana.filter((card) => types.includes(card.type));
+      filter.length === 0 ? hiragana : hiragana.filter((card) => filter.includes(card.type));
 
     setCards(shuffleArray(filteredCards));
-  };
+  }, [filter]);
 
   const next = () => {
     setCurrentCard((currentCard + 1) % cards.length);
@@ -30,15 +35,20 @@ const Flashcards = () => {
 
   return (
     <div>
-      <h1>Flashcards</h1>
+      <FilterDrawer isOpen={isOpen} onClose={onClose} />
+      <Button leftIcon={<RepeatIcon />} colorScheme="teal" variant="solid" onClick={newRun}>
+        New
+      </Button>
+      <IconButton aria-label="Search database" icon={<SettingsIcon />} onClick={onOpen} />
+      <br />
+      <br />
       <Flashcard key={currentCard} value={card.kana} meaning={card.roumaji} onComplete={next} />
       <br />
-      <div>
-        completed {currentCard}/{cards.length}
-      </div>
-      <FilterBox onFilter={handleFilter} />
       <br />
-      <button onClick={newRun}>New</button>
+      <Progress size="sm" colorScheme="pink" value={(currentCard * 100) / cards.length} />
+      <div>
+        {currentCard}/{cards.length}
+      </div>
     </div>
   );
 };
