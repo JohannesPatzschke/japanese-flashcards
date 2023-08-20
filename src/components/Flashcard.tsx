@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, Text } from '@chakra-ui/react';
 
 type FlashcardProps = {

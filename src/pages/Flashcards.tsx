@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import Flashcard from '../components/Flashcard';
 import FilterDrawer from '../components/FilterDrawer';
 import CompletedModal from '../components/CompletedModal';
