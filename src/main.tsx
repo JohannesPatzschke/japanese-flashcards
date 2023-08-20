@@ -4,6 +4,7 @@ import { ChakraProvider, ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/
 import chakraTheme from '@chakra-ui/theme';
 import Flashcards from './pages/Flashcards.tsx';
 import { SettingsProvider } from './contexts/Settings';
+import { GameStateProvider } from './contexts/GameState';
 
 const { Button } = chakraTheme.components;
 
@@ -22,7 +23,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     {/* <ChakraBaseProvider theme={theme}> */}
     <ChakraProvider>
       <SettingsProvider>
-        <Flashcards />
+        <GameStateProvider>
+          <Flashcards />
+        </GameStateProvider>
       </SettingsProvider>
     </ChakraProvider>
     {/* </ChakraBaseProvider> */}

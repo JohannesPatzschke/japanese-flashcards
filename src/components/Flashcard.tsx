@@ -4,19 +4,15 @@ import { Card, CardBody, Text } from '@chakra-ui/react';
 type FlashcardProps = {
   value: string;
   meaning: string;
-  onComplete: () => void;
+  onFlipped: (status: boolean) => void;
 };
 
-const Flashcard = ({ value, meaning, onComplete }: FlashcardProps) => {
+const Flashcard = ({ value, meaning, onFlipped }: FlashcardProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleClick = () => {
-    if (isFlipped) {
-      setIsFlipped(false);
-      onComplete();
-    } else {
-      setIsFlipped(true);
-    }
+    onFlipped(!isFlipped);
+    setIsFlipped(!isFlipped);
   };
 
   return (

@@ -1,53 +1,69 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import Flashcard from '../components/Flashcard';
 import FilterDrawer from '../components/FilterDrawer';
-import { shuffleArray } from '../utils/shuffle';
-import hiragana from '../assets/hiragana.json';
+import CompletedModal from '../components/CompletedModal';
 import { Button, IconButton, Progress, useDisclosure } from '@chakra-ui/react';
 import { RepeatIcon, SettingsIcon } from '@chakra-ui/icons';
-import { SettingsContext } from '../contexts/Settings';
+import { GameStateContext } from '../contexts/GameState';
 
 const Flashcards = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [currentCard, setCurrentCard] = useState(0);
-  const { filter } = useContext(SettingsContext);
-  const [cards, setCards] = useState(shuffleArray(hiragana));
+  const { isOpen: drawerIsOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
+  const { gameState, next, newGame } = useContext(GameStateContext);
+  const { startedAt, currentCard, completedCards, cards, completed } = gameState;
+
+  const [wasFlipped, setWasFlipped] = useState(false);
+
+  const handleNext = (faultyCard: boolean) => {
+    next(faultyCard);
+    setWasFlipped(false);
+  };
+
+  const handleFlip = () => {
+    if (!wasFlipped) {
+      setWasFlipped(true);
+    }
+  };
 
   const card = cards[currentCard];
 
-  useEffect(() => {
-    setCurrentCard(0);
-
-    const filteredCards =
-      filter.length === 0 ? hiragana : hiragana.filter((card) => filter.includes(card.type));
-
-    setCards(shuffleArray(filteredCards));
-  }, [filter]);
-
-  const next = () => {
-    setCurrentCard((currentCard + 1) % cards.length);
-  };
-
-  const newRun = () => {
-    setCurrentCard(0);
-    setCards(shuffleArray(cards));
-  };
-
   return (
     <div>
-      <FilterDrawer isOpen={isOpen} onClose={onClose} />
-      <Button leftIcon={<RepeatIcon />} colorScheme="teal" variant="solid" onClick={newRun}>
+      <CompletedModal isOpen={completed} />
+      <FilterDrawer isOpen={drawerIsOpen} onClose={closeDrawer} />
+      <Button
+        leftIcon={<RepeatIcon />}
+        colorScheme="teal"
+        variant="solid"
+        onClick={() => newGame()}
+      >
         New
       </Button>
-      <IconButton aria-label="Search database" icon={<SettingsIcon />} onClick={onOpen} />
+      <IconButton aria-label="Search database" icon={<SettingsIcon />} onClick={openDrawer} />
       <br />
       <br />
-      <Flashcard key={currentCard} value={card.kana} meaning={card.roumaji} onComplete={next} />
+      <Flashcard key={startedAt} value={card.kana} meaning={card.roumaji} onFlipped={handleFlip} />
+      <br />
+      <Button
+        colorScheme="red"
+        variant="solid"
+        isDisabled={!wasFlipped}
+        onClick={() => handleNext(true)}
+      >
+        + 0
+      </Button>
+      <Button
+        colorScheme="green"
+        variant="solid"
+        isDisabled={!wasFlipped}
+        onClick={() => handleNext(false)}
+      >
+        + 1
+      </Button>
       <br />
       <br />
-      <Progress size="sm" colorScheme="pink" value={(currentCard * 100) / cards.length} />
+      <Progress size="sm" colorScheme="pink" value={(completedCards * 100) / cards.length} />
       <div>
-        {currentCard}/{cards.length}
+        {completedCards}/{cards.length}
       </div>
     </div>
   );
