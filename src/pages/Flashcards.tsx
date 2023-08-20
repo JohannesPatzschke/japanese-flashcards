@@ -2,8 +2,17 @@ import React, { useState, useContext } from 'react';
 import Flashcard from '../components/Flashcard';
 import FilterDrawer from '../components/FilterDrawer';
 import CompletedModal from '../components/CompletedModal';
-import { Button, IconButton, Progress, useDisclosure } from '@chakra-ui/react';
-import { RepeatIcon, SettingsIcon } from '@chakra-ui/icons';
+import {
+  Button,
+  IconButton,
+  Progress,
+  useDisclosure,
+  Flex,
+  Spacer,
+  Center,
+  Box,
+} from '@chakra-ui/react';
+import { RepeatIcon, SettingsIcon, CloseIcon, CheckIcon } from '@chakra-ui/icons';
 import { GameStateContext } from '../contexts/GameState';
 
 const Flashcards = () => {
@@ -27,45 +36,69 @@ const Flashcards = () => {
   const card = cards[currentCard];
 
   return (
-    <div>
+    <Flex p="2" flexDirection="column" h="100%">
       <CompletedModal isOpen={completed} />
       <FilterDrawer isOpen={drawerIsOpen} onClose={closeDrawer} />
-      <Button
-        leftIcon={<RepeatIcon />}
-        colorScheme="teal"
-        variant="solid"
-        onClick={() => newGame()}
-      >
-        New
-      </Button>
-      <IconButton aria-label="Search database" icon={<SettingsIcon />} onClick={openDrawer} />
-      <br />
-      <br />
-      <Flashcard key={startedAt} value={card.kana} meaning={card.roumaji} onFlipped={handleFlip} />
-      <br />
-      <Button
-        colorScheme="red"
-        variant="solid"
-        isDisabled={!wasFlipped}
-        onClick={() => handleNext(true)}
-      >
-        + 0
-      </Button>
-      <Button
-        colorScheme="green"
-        variant="solid"
-        isDisabled={!wasFlipped}
-        onClick={() => handleNext(false)}
-      >
-        + 1
-      </Button>
-      <br />
-      <br />
-      <Progress size="sm" colorScheme="pink" value={(completedCards * 100) / cards.length} />
-      <div>
-        {completedCards}/{cards.length}
-      </div>
-    </div>
+      <Box>
+        <Flex>
+          <Button
+            leftIcon={<RepeatIcon />}
+            colorScheme="green"
+            variant="solid"
+            onClick={() => newGame()}
+          >
+            New
+          </Button>
+
+          <Spacer />
+
+          <IconButton aria-label="open-settings" icon={<SettingsIcon />} onClick={openDrawer} />
+        </Flex>
+      </Box>
+      <Spacer />
+      <Box>
+        <Flashcard
+          key={`${startedAt}_${currentCard}`}
+          value={card.kana}
+          meaning={card.roumaji}
+          onFlipped={handleFlip}
+        />
+        <br />
+        <Center>
+          <IconButton
+            aria-label="wrong-answer"
+            colorScheme="red"
+            variant="outline"
+            size="lg"
+            m="2"
+            minWidth={150}
+            icon={<CloseIcon />}
+            isDisabled={!wasFlipped}
+            onClick={() => handleNext(true)}
+          />
+          <IconButton
+            aria-label="correct-answer"
+            colorScheme="green"
+            variant="outline"
+            size="lg"
+            minWidth={150}
+            m="2"
+            icon={<CheckIcon />}
+            isDisabled={!wasFlipped}
+            onClick={() => handleNext(false)}
+          />
+        </Center>
+      </Box>
+      <Spacer />
+      <Box>
+        <Progress size="sm" colorScheme="green" value={(completedCards * 100) / cards.length} />
+        <Center>
+          <b>
+            {completedCards}/{cards.length}
+          </b>
+        </Center>
+      </Box>
+    </Flex>
   );
 };
 

@@ -5,6 +5,7 @@ import chakraTheme from '@chakra-ui/theme';
 import Flashcards from './pages/Flashcards.tsx';
 import { SettingsProvider } from './contexts/Settings';
 import { GameStateProvider } from './contexts/GameState';
+import './main.css';
 
 const { Button } = chakraTheme.components;
 

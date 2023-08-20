@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from 'react';
+import { useContext, useState, useCallback } from 'react';
 import { SettingsContext } from '../contexts/Settings';
 import { shuffleArray } from '../utils/shuffle';
 import hiragana from '../assets/hiragana.json';

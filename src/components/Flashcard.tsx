@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardBody, Text } from '@chakra-ui/react';
+import { Card, Text } from '@chakra-ui/react';
 
 type FlashcardProps = {
   value: string;
@@ -16,10 +16,8 @@ const Flashcard = ({ value, meaning, onFlipped }: FlashcardProps) => {
   };
 
   return (
-    <Card align="center" onClick={handleClick}>
-      <CardBody>
-        <Text fontSize="6xl">{isFlipped ? meaning : value}</Text>
-      </CardBody>
+    <Card align="center" justifyContent="center" onClick={handleClick} height={300}>
+      <Text fontSize="9xl">{isFlipped ? meaning : value}</Text>
     </Card>
   );
 };
