@@ -1,6 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ChakraProvider /*ChakraBaseProvider, extendBaseTheme*/ } from '@chakra-ui/react';
+import {
+  ChakraProvider,
+  extendTheme,
+  type ThemeConfig /*ChakraBaseProvider, extendBaseTheme*/,
+} from '@chakra-ui/react';
 // import chakraTheme from '@chakra-ui/theme';
 import Flashcards from './pages/Flashcards.tsx';
 import { SettingsProvider } from './contexts/Settings';
@@ -19,10 +23,17 @@ import './main.css';
 //   },
 // });
 
+const config: ThemeConfig = {
+  initialColorMode: 'dark',
+  useSystemColorMode: false,
+};
+
+const theme = extendTheme({ config });
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     {/* <ChakraBaseProvider theme={theme}> */}
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <SettingsProvider>
         <GameStateProvider>
           <Flashcards />
