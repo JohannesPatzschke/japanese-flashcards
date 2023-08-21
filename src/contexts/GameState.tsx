@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { SettingsContext } from '../contexts/Settings';
 import { shuffleArray } from '../utils/shuffle';
 import hiragana from '../assets/hiragana.json';
@@ -83,6 +83,10 @@ const GameStateProvider = ({ children }: GameStateProviderProps): JSX.Element =>
 
     newGame(gameState.faultyCards.map((index) => gameState.cards[index]));
   }, [newGame, gameState]);
+
+  useEffect(() => {
+    newGame();
+  }, [newGame]);
 
   return (
     <GameStateContext.Provider
