@@ -1,7 +1,7 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { SettingsContext } from '../contexts/Settings';
+import { Settings, SettingsContext } from '../contexts/Settings';
 import { shuffleArray } from '../utils/shuffle';
-import hiragana from '../assets/hiragana.json';
+import alphabets, { Card } from '../utils/alphabets';
 
 type GameStateProviderProps = {
   children: React.ReactNode;
@@ -12,22 +12,39 @@ type GameState = {
   currentCard: number;
   completedCards: number;
   faultyCards: Array<number>;
-  cards: typeof hiragana;
+  cards: Array<Card>;
   completed: boolean;
 };
 
 type GameStateContextProps = {
   gameState: GameState;
   next(faultyCard: boolean): void;
-  newGame(cards?: typeof hiragana): void;
+  newGame(cards?: Array<Card>): void;
   replayMistakes(): void;
 };
 
-function getFilteredCards(filter: Array<string>) {
-  return filter.length === 0 ? hiragana : hiragana.filter((card) => filter.includes(card.type));
+function getFilteredCards(filter: Settings['filter']): Array<Card> {
+  return alphabets
+    .map(({ name, sets }) => {
+      if (filter.length !== 0) {
+        const alphabetFilter = filter.find(({ alphabet }) => alphabet === name);
+
+        if (!alphabetFilter) {
+          return [];
+        }
+
+        return Object.entries(sets)
+          .filter(([type]) => alphabetFilter.types.includes(type))
+          .map(([, cards]) => cards)
+          .flat();
+      }
+
+      return [];
+    })
+    .flat();
 }
 
-function getDefaultState(filter: Array<string>) {
+function getDefaultState(filter: Settings['filter']) {
   return {
     startedAt: Date.now(),
     currentCard: 0,

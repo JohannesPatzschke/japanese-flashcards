@@ -61,6 +61,8 @@ const Flashcards = () => {
           key={`${startedAt}_${currentCard}`}
           value={card.kana}
           meaning={card.roumaji}
+          leftNote={card.alphabet}
+          rightNote={card.type}
           onFlipped={handleFlip}
         />
         <br />
